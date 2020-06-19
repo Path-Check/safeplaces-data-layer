@@ -141,7 +141,7 @@ class Service extends BaseService {
   async getCases(id) {
     const results = await casesService.fetchAll(id)
     if (results) {
-      return results
+      return results;
     }
     throw new Error('Internal server errror.')
   }
@@ -184,26 +184,26 @@ class Service extends BaseService {
    * @return {Array}
    */
 
-   _map(itm) {
-      return {
-        id: itm.id,
-        externalId: itm.external_id,
-        name: itm.name,
-        infoWebsiteUrl: itm.info_website_url || '',
-        referenceWebsiteUrl: itm.reference_website_url || '',
-        apiEndpointUrl: itm.api_endpoint_url || '',
-        privacyPolicyUrl: itm.privacy_policy_url || '',
-        regionCoordinates: itm.region_coordinates,
-        notificationThresholdPercent: itm.notification_threshold_percent,
-        notificationThresholdTimeline: itm.notification_threshold_timeframe,
-        chunkingInSeconds: itm.chunking_in_seconds,
-        daysToRetainRecords: itm.days_to_retain_records,
-        completedOnboarding: itm.completed_onboarding
-      }
-   }
+  _map(itm) {
+    return {
+      id: itm.id,
+      externalId: itm.external_id,
+      name: itm.name,
+      infoWebsiteUrl: itm.info_website_url || '',
+      referenceWebsiteUrl: itm.reference_website_url || '',
+      apiEndpointUrl: itm.api_endpoint_url || '',
+      privacyPolicyUrl: itm.privacy_policy_url || '',
+      regionCoordinates: itm.region_coordinates,
+      notificationThresholdPercent: itm.notification_threshold_percent,
+      notificationThresholdTimeline: itm.notification_threshold_timeframe,
+      chunkingInSeconds: itm.chunking_in_seconds,
+      daysToRetainRecords: itm.days_to_retain_records,
+      completedOnboarding: itm.completed_onboarding
+    }
+  }
 
 
-   /**
+  /**
    * Map camelcase params to snakecase
    *
    * @private
@@ -212,21 +212,21 @@ class Service extends BaseService {
    * @return {Object}
    */
 
-   _reverseMap(itm) {
-     return {
-       name: itm.name,
-       info_website_url: itm.infoWebsiteUrl,
-       reference_website_url: itm.referenceWebsiteUrl,
-       api_endpoint_url: itm.apiEndpointUrl,
-       privacy_policy_url: itm.privacyPolicyUrl,
-       region_coordinates: itm.regionCoordinates,
-       notification_threshold_percent: itm.notificationThresholdPercent,
-       notification_threshold_timeframe: itm.notificationThresholdTimeline,
-       chunking_in_seconds: itm.chunkingInSeconds,
-       days_to_retain_records: itm.daysToRetainRecords,
-       completed_onboarding: itm.completedOnboarding
-     }
-   }
+  _reverseMap(itm) {
+    return {
+      name: itm.name,
+      info_website_url: itm.infoWebsiteUrl,
+      reference_website_url: itm.referenceWebsiteUrl,
+      api_endpoint_url: itm.apiEndpointUrl,
+      privacy_policy_url: itm.privacyPolicyUrl,
+      region_coordinates: itm.regionCoordinates,
+      notification_threshold_percent: itm.notificationThresholdPercent,
+      notification_threshold_timeframe: itm.notificationThresholdTimeline,
+      chunking_in_seconds: itm.chunkingInSeconds,
+      days_to_retain_records: itm.daysToRetainRecords,
+      completed_onboarding: itm.completedOnboarding
+    }
+  }
 }
 
 module.exports = new Service('organizations');
