@@ -1,6 +1,6 @@
 {
   "name": "@sublet/data-layer",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "",
   "main": "index.js",
   "author": "",
@@ -34,7 +34,7 @@
     "test"
   ],
   "dependencies": {
-    "bcrypt": "^5.0.0",
+    "bcrypt": "^4.0.1",
     "bluebird": "^3.7.2",
     "chalk": "^4.1.0",
     "knex": "0.21.1",
