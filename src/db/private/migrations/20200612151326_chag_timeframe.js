@@ -1,4 +1,3 @@
-
 exports.up = function(knex) {
   return knex.schema.table('settings', table => {
     table.dropColumn('notification_threshold_count');
@@ -7,7 +6,7 @@ exports.up = function(knex) {
 };
 
 exports.down = function(knex) {
-  return knex.schema.table('organizations', table => {
+  return knex.schema.table('settings', table => {
     table.dropColumn('notification_threshold_timeframe');
     table.integer('notification_threshold_count').defaultTo(6);
   });
