@@ -3,12 +3,13 @@ const { onUpdateTrigger } = require('../../../config/private')(env);
 
 function dropTables(knex) {
   let dropQuery = `
-    DROP TABLE if exists publications;
-    DROP TABLE if exists trails;
-    DROP TABLE if exists users;
-    DROP TABLE if exists cases;
+    DROP TABLE if exists publications cascade;
+    DROP TABLE if exists trails cascade;
+    DROP TABLE if exists users cascade;
+    DROP TABLE if exists cases cascade;
     DROP TYPE if exists state_type;
-    DROP TABLE if exists organizations;
+    DROP TABLE if exists organizations cascade;
+    DROP TABLE if exists settings cascade;
   `;
   return knex.raw(dropQuery);
 }
