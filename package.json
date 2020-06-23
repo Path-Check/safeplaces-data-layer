@@ -1,6 +1,6 @@
 {
   "name": "@sublet/data-layer",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "main": "index.js",
   "description": "Sample data layer for the Safeplaces backend API.",
   "repository": "git@github.com:Path-Check/safeplaces-data-layer.git",
