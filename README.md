@@ -121,3 +121,22 @@ Seed the `PUBLIC` database with the correct seed files in the test environment.
 
 `spdl seed:run --scope public --env test`
 
+## Local Development
+
+Locally you are still using knex, so here are the scripts that will help you run these easily.
+
+`npm run migrate:up:private` - Migrate Private to Latest
+
+`npm run migrate:down:private` - Rollback Private to Latest
+
+`npm run migrate:up:public` - Migrate Public to Latest
+
+`npm run migrate:down:public` - Rollback Public to Latest
+
+`npm run seed:dev:private` - Seed Private to Development
+
+`npm run seed:test:private` - Rollback Private to Test
+
+`npm run seed:dev:public` - Seed Public to Development
+
+`npm run seed:test:public` - Rollback Public to Test
