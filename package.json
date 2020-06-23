@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "prebuild:prod": "rm -rf dist && mkdir dist",
-    "build:prod": "cp -r src/* dist && cp README.md ./dist",
+    "build:prod": "cp -r src/* dist && cp -r bin dist && cp README.md ./dist",
     "postbuild:prod": "cp package.json dist/package.json",
     "migrate:up": "knex migrate:latest",
     "migrate:down": "knex migrate:rollback",
