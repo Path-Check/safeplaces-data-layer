@@ -35,6 +35,7 @@ class Service extends BaseService {
       time: new Date(point.time), // Assumes time in epoch seconds
       case_id: caseId,
       duration: point.duration,
+      nickname: point.nickname,
     };
     const points = await this.create(record);
     if (points) {
@@ -76,6 +77,7 @@ class Service extends BaseService {
    * @param {Float} point.longitude
    * @param {Float} point.latitude
    * @param {Timestamp} point.time
+   * @param {String} point.nickname
    * @return {Object}
    */
   async updateRedactedPoint(point_id, point) {
@@ -83,13 +85,35 @@ class Service extends BaseService {
       hash: null,
       coordinates: this.makeCoordinate(point.longitude, point.latitude),
       time: new Date(point.time),
-      duration: point.duration
+      duration: point.duration,
+      ...(point.nickname && { nickname: point.nickname })
     };
+
     const points = await this.updateOne(point_id, record);
     if (points) {
       return this._getRedactedPoints([points]).shift()
     }
     throw new Error('Could not create hash.')
+  }
+
+  /**
+   * Update metadata on a set of points.
+   *
+   * @method updateRedactedPoint
+   * @param {Array} point_ids
+   * @param {Float} params.nickname
+   * @return {Array}
+   */
+  async updateRedactedPoints(point_ids, params) {
+    if (!point_ids) throw new Error('Invalid point ids');
+    if (!params) throw new Error('Invalid point_ids');
+
+    const points = await this.table.whereIn('id', point_ids).update(params).returning('*');
+
+    if (points) {
+      return this._getRedactedPoints(points);
+    }
+    throw new Error('Could not update points.');
   }
 
   makeCoordinate(longitude, latitude) {
@@ -152,6 +176,7 @@ class Service extends BaseService {
       trail.longitude = c.x;
       trail.latitude = c.y;
       trail.duration = point.duration;
+      trail.nickname = point.nickname || null;
       if (includeHash) trail.hash = point.hash;
       trail.time = (point.time.getTime() / 1000);
       if (returnDateTime) trail.time = point.time;
@@ -229,6 +254,7 @@ class Service extends BaseService {
         record.time = new Date(trail.time * 1000); // Assumes time in epoch seconds
         record.case_id = caseId;
         record.duration = trail.duration;
+        record.nickname = trail.nickname || null;
         trailRecords.push(record);
       }
     }
