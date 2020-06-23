@@ -4,8 +4,6 @@ const Buffer = require('buffer').Buffer;
 const knex = require('../../knex.js').private;
 const knexPostgis = require("knex-postgis");
 const wkx = require('wkx');
-const geoHash = require('../../../lib/geoHash');
-const transform = require('../../../lib/pocTransform.js');
 
 const st = knexPostgis(knex);
 
@@ -127,7 +125,7 @@ class Service extends BaseService {
       return point
     });
 
-    return transform.discreetToDuration(redactedPoints)
+    return redactedPoints;
   }
 
   /**
@@ -186,13 +184,12 @@ class Service extends BaseService {
   /**
    * Insert a group of points with redacted data.
    *
-   * @method loadTestRedactedTrails
+   * @method insertRedactedTrailSet
    * @param {Array} trails
    * @param {Number} caseId
    * @return {Array}
    */
   async insertRedactedTrailSet(trails, caseId) {
-    trails = transform.discreetToDuration(trails)
     const trailRecords = trails.map(trail => {
       return {
         hash: null,
@@ -239,7 +236,7 @@ class Service extends BaseService {
   /**
    * Needed to generate Hashes and timestamps of postgis for sinon stubs in tests.
    *
-   * @method loadTestRedactedTrails
+   * @method fetchTestHash
    * @param {Number} longitude
    * @param {Number} latitude
    * @return {Object}
