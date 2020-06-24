@@ -1,5 +1,5 @@
 {
-  "name": "@sublet/data-layer",
+  "name": "@pathcheck/data-layer",
   "version": "0.1.0",
   "main": "index.js",
   "description": "Sample data layer for the Safeplaces backend API.",
