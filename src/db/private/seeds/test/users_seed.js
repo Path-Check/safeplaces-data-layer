@@ -31,7 +31,7 @@ exports.seed = function (knex) {
 
       await knex('users').insert({
         id: '14718564-f521-4079-8e1b-23694290fc09',
-        auth0_id: 'auth0|5ef53cdcf3ce32001a40ede7',
+        idm_id: 'auth0|5ef53cdcf3ce32001a40ede7',
         organization_id: 1,
         username: 'safeplaces@extremesolution.com',
       });
