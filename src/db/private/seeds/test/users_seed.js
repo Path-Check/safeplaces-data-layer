@@ -29,8 +29,9 @@ exports.seed = function (knex) {
         maps_api_key: process.env.SEED_MAPS_API_KEY,
       });
 
-      await knex('user').insert({
-        id: 'auth0|5ef53cdcf3ce32001a40ede7',
+      await knex('users').insert({
+        id: '14718564-f521-4079-8e1b-23694290fc09',
+        idm_id: 'auth0|5ef53cdcf3ce32001a40ede7',
         organization_id: 1,
         username: 'safeplaces@extremesolution.com',
       });
