@@ -21,11 +21,23 @@ class Service extends BaseService {
 
     const points = await this.table.whereIn('case_id', case_ids)
     if (points) {
-      return this._getRedactedPoints(points)
+      return this.getRedactedPoints(points)
     }
     throw new Error('Could not find redacted points.')
   }
 
+  /**
+   * Create individual point
+   *
+   * @method createPointsFromUpload
+   * @param {Number} caseId
+   * @param {Object} point
+   * @param {Float} point.longitude
+   * @param {Float} point.latitude
+   * @param {Timestamp} point.time
+   * @param {String} point.nickname
+   * @return {Object}
+   */
   async createRedactedPoint(caseId, point) {
     let record = {
       hash: null,
@@ -37,11 +49,19 @@ class Service extends BaseService {
     };
     const points = await this.create(record);
     if (points) {
-      return this._getRedactedPoints(points).shift()
+      return this.getRedactedPoints(points).shift()
     }
     throw new Error('Could not create hash.')
   }
 
+  /**
+   * Create points from upload
+   *
+   * @method createPointsFromUpload
+   * @param {String} caseId
+   * @param {Array} uploadedPoints
+   * @return {Object}
+   */
   async createPointsFromUpload(caseId, uploadedPoints) {
     if (!caseId) throw new Error('Case ID is invalid');
     if (!uploadedPoints) throw new Error('Uploaded points are invalid');
@@ -64,7 +84,7 @@ class Service extends BaseService {
       throw new Error('Could not create points.');
     }
 
-    return this._getRedactedPoints(points);
+    return this.getRedactedPoints(points);
   }
 
   /**
@@ -89,7 +109,7 @@ class Service extends BaseService {
 
     const points = await this.updateOne(point_id, record);
     if (points) {
-      return this._getRedactedPoints([points]).shift()
+      return this.getRedactedPoints([points]).shift()
     }
     throw new Error('Could not create hash.')
   }
@@ -109,34 +129,20 @@ class Service extends BaseService {
     const points = await this.table.whereIn('id', point_ids).update(params).returning('*');
 
     if (points) {
-      return this._getRedactedPoints(points);
+      return this.getRedactedPoints(points);
     }
     throw new Error('Could not update points.');
   }
 
-  makeCoordinate(longitude, latitude) {
-    return st.setSRID(
-      st.makePoint(longitude, latitude),
-      4326
-    );
-  }
-
-  deleteIds(ids) {
-    if (!ids) throw new Error('Invalid point ids');
-    return this.table.whereIn('id', ids).del();
-  }
-
-  // private
-
   /**
    * Filter all Points and return redacted information
    *
-   * @method _getRedactedPoints
+   * @method getRedactedPoints
    * @param {String} case_id
    * @param {Options} Options
    * @return {Array}
    */
-  _getRedactedPoints(points, includeHash = false, returnDateTime = true) {
+  getRedactedPoints(points, includeHash = false, returnDateTime = true) {
     let redactedTrail = [];
 
     points.forEach(point => {
@@ -160,27 +166,19 @@ class Service extends BaseService {
     return redactedTrail;
   }
 
-  /**
-   * Find cases in a specific time interval
-   *
-   * @method findIntervalCases
-   * @param {Object} publication
-   * @return {Array}
-   */
-  async findIntervalCases(publication) {
-    if (!publication.start_date) throw new Error('Start date is invalid');
-    if (!publication.end_date) throw new Error('End date is invalid');
-
-    let cases = await this.table
-                  .select('case_id')
-                  .where('time', '>=', new Date(publication.start_date))
-                  .where('time', '<=', new Date(publication.end_date))
-                  .groupBy('case_id');
-    if (cases) {
-      return cases.map(c => c.case_id)
-    }
-    return []
+  makeCoordinate(longitude, latitude) {
+    return st.setSRID(
+      st.makePoint(longitude, latitude),
+      4326
+    );
   }
+
+  deleteIds(ids) {
+    if (!ids) throw new Error('Invalid point ids');
+    return this.table.whereIn('id', ids).del();
+  }
+
+  // private
 
   /**
    * Insert a group of points with redacted data.

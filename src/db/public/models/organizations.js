@@ -1,4 +1,4 @@
-const BaseService = require('../common/service.js');
+const BaseService = require('../../common/service.js');
 
 class Service extends BaseService {
 

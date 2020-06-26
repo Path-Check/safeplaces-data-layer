@@ -24,7 +24,7 @@ clean:
 test-unit:
 	NODE_ENV=test \
 	npx mocha --exit \
-	./test/unit
+	./test
 
 test-all:
 	npm run test

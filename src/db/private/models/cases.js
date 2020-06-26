@@ -234,7 +234,7 @@ class Service extends BaseService {
               .where('cases.expires_at', '>', new Date());
 
     if (points) {
-      return pointsService._getRedactedPoints(points, true, false);
+      return pointsService.getRedactedPoints(points, true, false);
     }
 
     return []
