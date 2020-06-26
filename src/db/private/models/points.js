@@ -50,7 +50,7 @@ class Service extends BaseService {
 
     const records = pointsGrouped.map(point => {
       return {
-        hash: point.hash,
+        hash: null,
         coordinates: point.coordinates,
         time: new Date(point.time),
         upload_id: uploadedPoints[0].upload_id,
@@ -131,30 +131,6 @@ class Service extends BaseService {
   /**
    * Filter all Points and return redacted information
    *
-   * @method _buildDurationPoints
-   * @param {Array} points
-   * @return {Array}
-   */
-  _buildDurationPoints(points) {
-    const redactedPoints = points.map(p => {
-      let point = {};
-      const b = new Buffer.from(p.coordinates, 'hex');
-      const c = wkx.Geometry.parse(b);
-      point.coordinates = p.coordinates
-      point.longitude = c.x;
-      point.longitude = c.x;
-      point.latitude = c.y;
-      point.time = new Date(p.time).getTime();
-      point.hash = p.hash;
-      return point
-    });
-
-    return redactedPoints;
-  }
-
-  /**
-   * Filter all Points and return redacted information
-   *
    * @method _getRedactedPoints
    * @param {String} case_id
    * @param {Options} Options
@@ -226,37 +202,6 @@ class Service extends BaseService {
     })
 
     return this.create(trailRecords);
-  }
-
-  /**
-   * Simply used to test the length of the process for hashing a large set of points.
-   *
-   * @method loadTestRedactedTrails
-   * @param {Array} trails
-   * @param {Number} caseId
-   * @return {Array}
-   */
-  async loadTestRedactedTrails(trails, caseId) {
-    let trailRecords = [];
-
-    trails = transform.discreetToDuration(trails)
-
-    let trail, record, hash;
-    for(trail of trails) {
-      record = {};
-      hash = await geoHash.encrypt(trail)
-      if (hash) {
-        record.hash = hash.encodedString
-        record.coordinates = this.makeCoordinate(trail.longitude, trail.latitude);
-        record.time = new Date(trail.time * 1000); // Assumes time in epoch seconds
-        record.case_id = caseId;
-        record.duration = trail.duration;
-        record.nickname = trail.nickname || null;
-        trailRecords.push(record);
-      }
-    }
-
-    return trailRecords
   }
 
   /**

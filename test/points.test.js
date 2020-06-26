@@ -3,7 +3,7 @@ process.env.NODE_ENV = 'test';
 const expect = require('chai').expect;
 const geoHash = require('../src/lib/geoHash');
 
-describe('Geo Hash', () => {
+describe('Points', () => {
   it('should return a properly formatted hash', async () => {
     const location = {
       "longitude": 14.91328448,

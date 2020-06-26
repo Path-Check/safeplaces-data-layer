@@ -1,6 +1,7 @@
 const path = require('path');
 
 module.exports = env => {
+  if (!env) env = process.env.NODE_ENV || 'development'
   return {
     client: 'pg',
     connection: {

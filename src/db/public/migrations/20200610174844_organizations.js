@@ -1,5 +1,4 @@
-const env = process.env.NODE_ENV || 'development';
-const { onUpdateTrigger } = require('../../../config/private')(env);
+const { onUpdateTrigger } = require('../../knexfile');
 
 exports.up = function(knex) {
   return knex.schema.createTable('organizations', function (table) {

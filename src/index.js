@@ -10,7 +10,11 @@ let privateService = {
   userService: require('./db/private/models/users')
 }
 
-let publicService = {}
+let publicService = {
+  accessCodeService: require('./db/public/models/accessCodes'),
+  organizationService: require('./db/public/models/organizations'),
+  pointService: require('./db/public/models/points')
+}
 
 if (process.env.SERVICE_NAME === 'INGEST') privateService = null
 
