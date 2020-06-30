@@ -36,6 +36,43 @@ describe("Points", () => {
     currentCase = await mockData.mockCase(caseParams)
   });
 
+  describe('fetch redacted points for case', () => {
+
+    before(async () => {
+      const point = {
+        longitude: 23.183994,
+        latitude: -72.318221,
+        time: "2020-06-12T13:00:00-04:00",
+        duration: 10
+      }
+      await pointService.createRedactedPoint(currentCase.caseId, point)
+    })
+
+    it("returns properly formatted points for a case", async () => {
+      const results = await pointService.fetchRedactedPoints([currentCase.caseId])
+
+      expect(results).to.be.a('array');
+      expect(results[0].caseId).to.be.equal(currentCase.caseId);
+    });
+
+    it("pulls new point from database and checks fields", async () => {
+      const point = {
+        longitude: 23.183914,
+        latitude: -72.318121,
+        time: "2020-06-14:00:00-04:00",
+        duration: 5
+      }
+
+      const results = await pointService.createRedactedPoint(currentCase.caseId, point)
+      const foundPoint = await pointService.findOne({ id: results.id })
+
+      expect(foundPoint.hash).to.be.equal(null);
+      expect(foundPoint.coordinates).to.be.a('string');
+      expect(foundPoint.coordinates).to.be.equal('0101000020E6100000CC46E7FC142F3740EFCA2E185C1452C0');
+    });
+
+  });
+
   describe('create redacted point', () => {
 
     it("returns properly formatted point", async () => {
