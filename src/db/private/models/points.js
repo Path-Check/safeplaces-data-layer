@@ -30,7 +30,7 @@ class Service extends BaseService {
   /**
    * Create individual point
    *
-   * @method createPointsFromUpload
+   * @method createRedactedPoint
    * @param {Number} caseId
    * @param {Object} point
    * @param {Float} point.longitude
@@ -87,7 +87,7 @@ class Service extends BaseService {
   }
 
   /**
-   * Format a given poiint to a stored redacted point.
+   * Format a given point to a stored redacted point.
    *
    * @method updateRedactedPoint
    * @param {String} point_id
@@ -164,6 +164,15 @@ class Service extends BaseService {
     });
 
     return redactedTrail;
+  }
+
+  coordinateToLatLng(coord) {
+    const b = new Buffer.from(coord, 'hex');
+    const c = wkx.Geometry.parse(b);
+    return {
+      longitude: c.x,
+      latitude: c.y
+    }
   }
 
   makeCoordinate(longitude, latitude) {
