@@ -19,4 +19,4 @@ class Service extends BaseService {
 
 }
 
-module.exports = new Service('organizations');
+module.exports = new Service('organizations', 'public');

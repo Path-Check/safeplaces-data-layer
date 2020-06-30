@@ -1,4 +1,6 @@
 const BaseService = require('../../common/service.js');
+const geoHash = require("../../../lib/geoHash");
+
 const Buffer = require('buffer').Buffer;
 
 const knex = require('../../knex.js').private;
@@ -66,11 +68,9 @@ class Service extends BaseService {
     if (!caseId) throw new Error('Case ID is invalid');
     if (!uploadedPoints) throw new Error('Uploaded points are invalid');
 
-    const pointsGrouped = this._buildDurationPoints(uploadedPoints);
-
-    const records = pointsGrouped.map(point => {
+    const records = uploadedPoints.map(point => {
       return {
-        hash: null,
+        hash: point.hash,
         coordinates: point.coordinates,
         time: new Date(point.time),
         upload_id: uploadedPoints[0].upload_id,
@@ -99,19 +99,24 @@ class Service extends BaseService {
    * @return {Object}
    */
   async updateRedactedPoint(point_id, point) {
-    let record = {
-      hash: null,
-      coordinates: this.makeCoordinate(point.longitude, point.latitude),
-      time: new Date(point.time),
-      duration: point.duration,
-      ...(point.nickname && { nickname: point.nickname })
-    };
-
-    const points = await this.updateOne(point_id, record);
-    if (points) {
-      return this.getRedactedPoints([points]).shift()
+    const hash = await geoHash.encrypt(point);
+    if (hash) {
+      let record = {
+        hash: hash.encodedString,
+        coordinates: this.makeCoordinate(point.longitude, point.latitude),
+        time: new Date(point.time),
+        duration: point.duration,
+        ...(point.nickname && { nickname: point.nickname })
+      };
+  
+      const points = await this.updateOne(point_id, record);
+      if (points) {
+        return this.getRedactedPoints([points]).shift()
+      }
+      throw new Error('Could not create hash.')
+    } else {
+      throw new Error('Could not hash point.')
     }
-    throw new Error('Could not create hash.')
   }
 
   /**
@@ -178,10 +183,11 @@ class Service extends BaseService {
     return this.table.whereIn('id', ids).del();
   }
 
-  // private
+  // Testing - Mock Data Only
 
   /**
    * Insert a group of points with redacted data.
+   * MOCK DATA ONLY - TESTINGS
    *
    * @method insertRedactedTrailSet
    * @param {Array} trails
@@ -204,6 +210,7 @@ class Service extends BaseService {
 
   /**
    * Needed to generate Hashes and timestamps of postgis for sinon stubs in tests.
+   * MOCK DATA ONLY - TESTINGS
    *
    * @method fetchTestHash
    * @param {Number} longitude

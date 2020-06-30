@@ -12,6 +12,7 @@ class Service extends BaseService {
       'upload_id',
       'coordinates',
       'time',
+      'hash',
     )
   }
 

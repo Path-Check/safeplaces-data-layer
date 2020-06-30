@@ -1,5 +1,5 @@
 let privateService = {
-  accessCodeService: require("./db/private/models/accessCodes"),
+  accessCodeService: require("./db/public/models/accessCodes"),
   caseService: require("./db/private/models/cases"),
   organizationService: require("./db/private/models/organizations"),
   pointService: require("./db/private/models/points"),

@@ -1,5 +1,7 @@
 const BaseService = require('../../common/service.js');
 const knex = require('../../knex.js').public;
+const geoHash = require('../../../lib/geoHash');
+
 const knexPostgis = require("knex-postgis");
 
 const st = knexPostgis(knex);
@@ -13,18 +15,22 @@ class Service extends BaseService {
 
     const pointRecords = [];
 
+    let record;
     for(let point of points) {
-      const record = {
-        access_code_id: accessCode.id,
-        upload_id: uploadId,
-        time: new Date(point.time), // Assumes time in epoch milliseconds
-        coordinates: st.setSRID(
-          st.makePoint(point.longitude, point.latitude),
-          4326
-        ),
-      };
-
-      pointRecords.push(record);
+      const hash = await geoHash.encrypt(point);
+      if (hash) {
+        record = {
+          access_code_id: accessCode.id,
+          upload_id: uploadId,
+          time: new Date(point.time), // Assumes time in epoch milliseconds
+          coordinates: st.setSRID(
+            st.makePoint(point.longitude, point.latitude),
+            4326
+          ),
+          hash: hash.encodedString
+        };
+        pointRecords.push(record);
+      }
     }
 
     return this.create(pointRecords);
@@ -32,4 +38,4 @@ class Service extends BaseService {
 
 }
 
-module.exports = new Service('points');
+module.exports = new Service('points', 'public');

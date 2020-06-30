@@ -5,10 +5,14 @@ const {
     organizationService,
     pointService,
     publicationService,
-    publicOrganizationService,
+    // publicOrganizationService,
     settingService,
     uploadService,
     userService
+  },
+  public: {
+    organizationService: publicOrganizationService,
+    pointService: publicPointService,
   }
 } = require('../../src')
 
@@ -27,12 +31,14 @@ class MockData {
    * Clear out Mock Data
    */
   async clearMockData() {
+    await accessCodeService.deleteAllRows();
     await organizationService.deleteAllRows();
     await settingService.deleteAllRows();
     await userService.deleteAllRows();
     await pointService.deleteAllRows();
     await publicationService.deleteAllRows();
     await caseService.deleteAllRows();
+    await publicPointService.deleteAllRows();
     sinon.restore();
   }
 
@@ -231,28 +237,7 @@ class MockData {
    * @method mockAccessCode
    */
   async mockAccessCode() {
-    const mockCode = {
-      id: 1,
-      value: await accessCodeService.generateValue(),
-      valid: true,
-    };
-
-    try {
-      sinon.restoreObject(accessCodeService);
-    } catch (error) {
-      // no-opconsole.log(error)
-    }
-
-    sinon.stub(accessCodeService, 'create').returns(mockCode);
-
-    sinon.stub(accessCodeService, 'find').callsFake((query) => {
-      if (query && (query.id === mockCode.id || query.value === mockCode.value)) {
-        return mockCode;
-      }
-      return null;
-    });
-
-    return await accessCodeService.create();
+    return accessCodeService.create();
   }
 
   /**

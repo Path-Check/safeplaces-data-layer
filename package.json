@@ -23,7 +23,7 @@
     "pretest": "npm run migrate:up:private && npm run migrate:up:public && npm run seed:test:private && npm run seed:test:public",
     "test": "nyc --reporter=html --reporter=text mocha test/**/*.* --exit",
     "posttest": "npm run seed:dev:private && npm run seed:dev:public",
-    "test:nosetup": "nyc --reporter=html --reporter=text mocha test/**/*.* --exit",
+    "test:slim": "mocha test/**/*.* --exit",
     "format": "prettier --write **/*.{js,json}"
   },
   "bin": {
