@@ -121,6 +121,7 @@ describe("Points", () => {
         longitude: 14.91328448,
         latitude: 41.24060321,
         time: 1589117739000,
+        hash: 'adfasdfasdf'
       }];
 
       const uploadId = uuidv4();

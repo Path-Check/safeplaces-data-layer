@@ -1,6 +1,5 @@
 const BaseService = require('../../common/service.js');
 const knex = require('../../knex.js').public;
-const geoHash = require('../../../lib/geoHash');
 
 const knexPostgis = require("knex-postgis");
 
@@ -13,25 +12,18 @@ class Service extends BaseService {
     if (!accessCode || !accessCode.id) throw new Error('Access code is invalid');
     if (!uploadId) throw new Error('Upload ID is invalid');
 
-    const pointRecords = [];
-
-    let record;
-    for(let point of points) {
-      const hash = await geoHash.encrypt(point);
-      if (hash) {
-        record = {
-          access_code_id: accessCode.id,
-          upload_id: uploadId,
-          time: new Date(point.time), // Assumes time in epoch milliseconds
-          coordinates: st.setSRID(
-            st.makePoint(point.longitude, point.latitude),
-            4326
-          ),
-          hash: hash.encodedString
-        };
-        pointRecords.push(record);
+    const pointRecords = points.map(point => {
+      return {
+        access_code_id: accessCode.id,
+        upload_id: uploadId,
+        time: new Date(point.time), // Assumes time in epoch milliseconds
+        coordinates: st.setSRID(
+          st.makePoint(point.longitude, point.latitude),
+          4326
+        ),
+        hash: point.hash
       }
-    }
+    });
 
     return this.create(pointRecords);
   }

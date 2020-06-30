@@ -1,5 +1,4 @@
 const BaseService = require('../../common/service.js');
-const geoHash = require("../../../lib/geoHash");
 
 const Buffer = require('buffer').Buffer;
 
@@ -92,6 +91,7 @@ class Service extends BaseService {
    *
    * @method updateRedactedPoint
    * @param {String} point_id
+   * @param {String} point.hash
    * @param {Float} point.longitude
    * @param {Float} point.latitude
    * @param {Timestamp} point.time
@@ -99,24 +99,19 @@ class Service extends BaseService {
    * @return {Object}
    */
   async updateRedactedPoint(point_id, point) {
-    const hash = await geoHash.encrypt(point);
-    if (hash) {
-      let record = {
-        hash: hash.encodedString,
-        coordinates: this.makeCoordinate(point.longitude, point.latitude),
-        time: new Date(point.time),
-        duration: point.duration,
-        ...(point.nickname && { nickname: point.nickname })
-      };
-  
-      const points = await this.updateOne(point_id, record);
-      if (points) {
-        return this.getRedactedPoints([points]).shift()
-      }
-      throw new Error('Could not create hash.')
-    } else {
-      throw new Error('Could not hash point.')
+    let record = {
+      hash: point.hash,
+      coordinates: this.makeCoordinate(point.longitude, point.latitude),
+      time: new Date(point.time),
+      duration: point.duration,
+      ...(point.nickname && { nickname: point.nickname })
+    };
+
+    const points = await this.updateOne(point_id, record);
+    if (points) {
+      return this.getRedactedPoints([points]).shift()
     }
+    throw new Error('Could not create hash.')
   }
 
   /**
