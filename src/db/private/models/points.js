@@ -17,12 +17,12 @@ class Service extends BaseService {
    * @param {Array} case_ids
    * @return {Array}
    */
-  async fetchRedactedPoints(case_ids) {
+  async fetchRedactedPoints(case_ids, includeHash = false) {
     if (!case_ids) throw new Error('Case IDs is invalid')
 
     const points = await this.table.whereIn('case_id', case_ids)
     if (points) {
-      return this.getRedactedPoints(points)
+      return this.getRedactedPoints(points, includeHash)
     }
     throw new Error('Could not find redacted points.')
   }

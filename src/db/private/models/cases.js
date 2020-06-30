@@ -126,6 +126,24 @@ class Service extends BaseService {
   }
 
   /**
+   * Update Point Hashes
+   *
+   * @method updatePointHashes
+   * @param {Array[Point]} points
+   * @return {Array}
+   */
+  async updatePointHashes(points) {
+    if (!points) throw new Error('Points are invalid')
+
+    let point
+    for(point of points) {
+      await pointsService.updateRedactedPoint(point.id, point)
+    }
+    
+    return true
+  }
+
+  /**
    * Update Case Publication Id
    *
    * @method updateCasePublicationId
@@ -151,10 +169,10 @@ class Service extends BaseService {
    * @param {Number} case_id
    * @return {Array}
    */
-  async fetchCasePoints(case_id) {
+  async fetchCasePoints(case_id, includeHashes = false) {
     if (!case_id) throw new Error('Case ID is invalid.')
 
-    const points = await pointsService.fetchRedactedPoints([case_id])
+    const points = await pointsService.fetchRedactedPoints([case_id], includeHashes)
     if (points) {
       return points
     }
@@ -213,11 +231,45 @@ class Service extends BaseService {
    * Fetch all points from cases that are published
    *
    * @method fetchAllPublishedPoints
-   * @param {Number} case_id
-   * @param {Object} point
+   * @return {Array}
+   */
+  async fetchAllPublishedPoints(caseIds) {
+
+    let points = await this.fetchAllPointsByCaseIds(caseIds)
+    if (points) {
+
+      let alreadyPublishedPoints = await this.table
+                .select(
+                  'cases.id AS caseId',
+                  'publications.publish_date AS publishDate',
+                  'points.id AS pointId',
+                  'points.coordinates',
+                  'points.time',
+                  'points.hash',
+                  'points.duration'
+                )
+                .join('points', 'cases.id', '=', 'points.case_id')
+                .join('publications', 'cases.publication_id', '=', 'publications.id')
+                .where('cases.state', 'published')
+                .where('cases.expires_at', '>', new Date());
+                
+      points = points.concat(alreadyPublishedPoints)
+      if (points) {
+        return pointsService.getRedactedPoints(points, true, false);
+      }
+    }
+
+    return []
+  }
+
+  /**
+   * Fetch all points from cases given an array of ID's
+   *
+   * @method fetchAllPointsByCaseIds
+   * @param {Array[Number]} caseIds
    * @return {Object}
    */
-  async fetchAllPublishedPoints() {
+  async fetchAllPointsByCaseIds(caseIds) {
     const points = await this.table
               .select(
                 'cases.id AS caseId',
@@ -230,11 +282,10 @@ class Service extends BaseService {
               )
               .join('points', 'cases.id', '=', 'points.case_id')
               .join('publications', 'cases.publication_id', '=', 'publications.id')
-              .where('cases.state', 'published')
-              .where('cases.expires_at', '>', new Date());
+              .whereIn('cases.id', caseIds);
 
     if (points) {
-      return pointsService.getRedactedPoints(points, true, false);
+      return points;
     }
 
     return []
