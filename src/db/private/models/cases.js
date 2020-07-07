@@ -13,32 +13,38 @@ class Service extends BaseService {
    * @param {String} organization_id
    * @return {Array}
    */
-  async publishCases(caseIds, organizationId) {
-    if (!caseIds) throw new Error('Case IDs are invalid');
-    if (!caseIds.length) throw new Error('Case IDs length is zero');
-    if (!organizationId) throw new Error('Organization ID is not valid');
+   async publishCases(caseIds, organizationId) {
+     if (!caseIds) throw new Error('Case IDs are invalid');
+     if (!caseIds.length) throw new Error('Case IDs length is zero');
+     if (!organizationId) throw new Error('Organization ID is not valid');
 
-    const stagedCases = await this.table
-      .whereIn('id', caseIds)
-      .andWhere('organization_id', organizationId)
-      .andWhere('state', 'staging')
-      .select();
+     const stagedCases = await this.table
+       .whereIn('id', caseIds)
+       .andWhere('organization_id', organizationId)
+       .andWhere('state', 'staging')
+       .select();
 
-    if (stagedCases.length === caseIds.length) {
-      await this.table.whereIn('id', caseIds).update({ state: 'published' });
+     if (stagedCases.length === caseIds.length) {
+       const newlyPublishedCases = await this.table.whereIn('id', caseIds).update({ state: 'published' }).returning('*');
 
-      const results = await this.table
-        .where('state', 'published')
-        .andWhere('expires_at', '>', new Date())
-        .select();
+       if (newlyPublishedCases) {
+         const results = await this.table
+           .where('state', 'published')
+           .andWhere('expires_at', '>', new Date())
+           .select();
 
-      if (results) {
-        return _.map(results, c => this._mapCase(c));
-      }
-    }
-
-    throw new Error('Could not publish the case. Make sure all are moved into staging state.')
-  }
+         if (results) {
+           return _.map(results, c => this._mapCase(c));
+         } else {
+           throw new Error('Could not locate any unexpired published cases.')
+         }
+       } else {
+         throw new Error('Unable to publish cases at this time.')
+       }
+     } else {
+       throw new Error(`Could not locate staged cases with caseIds ${caseIds}. Make sure all are moved into staging state.`)
+     }
+   }
 
   /**
    * Consent To Publish
