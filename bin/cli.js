@@ -10,7 +10,7 @@ function success(text) {
 }
 
 function getConfig(scope, env) {
-  const configPath = path.join(__dirname, `../config/${scope}`);
+  const configPath = path.join(__dirname, `../src/config/${scope}`);
   return require(configPath)(env);
 }
 
