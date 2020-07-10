@@ -9,7 +9,5 @@
   "parserOptions": {
     "ecmaVersion": 11
   },
-  "plugins": [
-    "mocha"
-  ]
+  "plugins": ["mocha"]
 }

@@ -1,10 +1,10 @@
 # Safeplaces Data Layer Library
 
-The Safeplaces Data layer is a sample library.  It contains migrations, seeds, and the general schema for working with both the public and private libs.
+The Safeplaces Data layer is a sample library. It contains migrations, seeds, and the general schema for working with both the public and private libs.
 
-Under the hood this utilizes the Knex library.  So all services can access the standard Knex commands.  More below.
+Under the hood this utilizes the Knex library. So all services can access the standard Knex commands. More below.
 
-The Safeplaces Backend deploys two different types of databases.  One is public facing and the other is private.  The reasons for this is a security concern that was identified early on.  We don't want the published (redacted) data being stored in the same place as the ingested data.  Additionally, we don’t want to be writing data from the public endpoints to the private database.
+The Safeplaces Backend deploys two different types of databases. One is public facing and the other is private. The reasons for this is a security concern that was identified early on. We don't want the published (redacted) data being stored in the same place as the ingested data. Additionally, we don’t want to be writing data from the public endpoints to the private database.
 
 ## Environment Variables
 
@@ -36,7 +36,7 @@ npm install @sublet/data-layer
 yarn add @sublet/data-layer
 ```
 
-Once installed, include it 
+Once installed, include it
 
 ```
 const db = require('@sublet/data-layer');
@@ -55,7 +55,7 @@ pointService.all().then(data => console.log('All Data: ', data))
 
 ### Knex
 
-To access any of the knex commands, you can simply 
+To access any of the knex commands, you can simply
 
 ```
 const db = require('@sublet/data-layer');
@@ -91,7 +91,7 @@ organizationService.updateOne(1, { name: 'Some other Name' })
 
 ## CLI
 
-Due to the nature of database management we have built in a small CLI that will allow you to run seeds and migrations.  To install enter the following.
+Due to the nature of database management we have built in a small CLI that will allow you to run seeds and migrations. To install enter the following.
 
 This needs to be installed globaly so run the following command.
 
@@ -120,4 +120,3 @@ Seed the `PRIVATE` database with the correct seed files in the development envir
 Seed the `PUBLIC` database with the correct seed files in the test environment.
 
 `spdl seed:run --scope public --env test`
-

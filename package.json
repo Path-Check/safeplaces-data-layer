@@ -17,7 +17,7 @@
     "posttest": "knex seed:run --env development",
     "test:unit": "mocha test/unit/*.* --exit",
     "test:all": "mocha test/**/*.* --exit",
-    "format": "prettier --write \"**/*.{js,json}\""
+    "format": "prettier --write \"**/*.{js,json,md}\""
   },
   "files": [
     "src/**/*",
