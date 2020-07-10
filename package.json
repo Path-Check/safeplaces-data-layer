@@ -1,6 +1,6 @@
 {
   "name": "@pathcheck/data-layer",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "main": "index.js",
   "description": "Sample data layer for the Safeplaces backend API.",
   "repository": "git@github.com:Path-Check/safeplaces-data-layer.git",
