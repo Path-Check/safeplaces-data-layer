@@ -178,7 +178,7 @@ class Service extends BaseService {
       trail.duration = point.duration;
       trail.nickname = point.nickname || null;
       if (includeHash) trail.hash = point.hash;
-      trail.time = (point.time.getTime() / 1000);
+      trail.time = point.time.getTime();
       if (returnDateTime) trail.time = point.time;
       redactedTrail.push(trail);
     });
