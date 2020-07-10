@@ -1,62 +1,58 @@
 {
   "name": "@pathcheck/data-layer",
   "version": "0.1.5",
-  "main": "index.js",
-  "description": "Sample data layer for the Safeplaces backend API.",
+  "main": "src/index.js",
+  "description": "Sample data layer for the SafePlaces backend API",
   "repository": "git@github.com:Path-Check/safeplaces-data-layer.git",
-  "author": "Jeffrey Hunter <jeff@jeffreyhunter.me>",
   "license": "MIT",
   "scripts": {
-    "prebuild:prod": "rm -rf dist && mkdir dist",
-    "build:prod": "cp -r src/* dist && cp -r bin dist && cp README.md ./dist",
-    "postbuild:prod": "cp package.json dist/package.json",
     "migrate:up": "knex migrate:latest",
     "migrate:down": "knex migrate:rollback",
     "seed": "knex seed:run --env development",
     "seed:test": "knex seed:run --env test",
-    "lint": "eslint ./",
-    "lint:fix": "eslint ./ --fix",
+    "lint": "eslint \"**/*.js\"",
+    "lint:fix": "eslint --fix \"**/*.js\"",
     "pretest": "knex migrate:latest && knex seed:run --env test",
     "test": "nyc --reporter=html --reporter=text mocha test/**/*.* --exit",
     "posttest": "knex seed:run --env development",
     "test:unit": "mocha test/unit/*.* --exit",
     "test:all": "mocha test/**/*.* --exit",
-    "format": "prettier --write **/*.{js,json}"
+    "format": "prettier --write \"**/*.{js,json,md}\""
   },
+  "files": [
+    "src/**/*",
+    "bin/**/*"
+  ],
   "bin": {
-    "spdl": "./bin/cli.js"
+    "spdl": "bin/cli.js"
   },
   "engines": {
     "node": ">=12.14.1"
   },
   "pre-commit": [
     "format",
-    "lint",
-    "test"
+    "lint"
   ],
   "dependencies": {
     "bcrypt": "^4.0.1",
     "bluebird": "^3.7.2",
     "chalk": "^4.1.0",
+    "commander": "^5.1.0",
     "knex": "0.21.1",
     "knex-postgis": "0.12.0",
     "ngeohash": "^0.6.3",
     "pg": "8.2.1",
+    "uuidv4": "^6.1.1",
     "wkx": "^0.5.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.10.2",
-    "babel-loader": "^8.1.0",
     "chai": "^4.2.0",
     "eslint": "^7.0.0",
+    "eslint-plugin-mocha": "^7.0.1",
     "hygen": "^5.0.3",
-    "jshint": "^2.11.0",
     "mocha": "^7.1.1",
     "nyc": "^15.0.1",
     "pre-commit": "^1.2.2",
-    "prettier": "^2.0.5",
-    "uuidv4": "^6.0.9",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11"
+    "prettier": "^2.0.5"
   }
 }

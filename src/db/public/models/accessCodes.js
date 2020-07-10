@@ -2,16 +2,17 @@ const BaseService = require('../common/service.js');
 const knex = require('../knex.js');
 
 class Service extends BaseService {
-
   async find(query) {
     if (!query) throw new Error('Query is invalid');
 
-    return super.find(query).first(
-      'id',
-      'value',
-      'upload_consent',
-      knex.raw('COALESCE(invalidated_at, NOW()) >= NOW() AS valid'),
-    );
+    return super
+      .find(query)
+      .first(
+        'id',
+        'value',
+        'upload_consent',
+        knex.raw('COALESCE(invalidated_at, NOW()) >= NOW() AS valid'),
+      );
   }
 
   async updateUploadConsent(code, consent) {
@@ -34,7 +35,6 @@ class Service extends BaseService {
 
     code.valid = false;
   }
-
 }
 
 module.exports = new Service('access_codes');
