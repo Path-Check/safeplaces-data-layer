@@ -30,9 +30,7 @@ test-all:
 	npm run test
 
 publish:
-	npm run-script build:prod
-	npm publish dist --access public --dry-run
+	npm publish --access public --dry-run
 
 publish-prod:
-	npm run-script build:prod
-	npm publish dist --access public
+	npm publish --access public
