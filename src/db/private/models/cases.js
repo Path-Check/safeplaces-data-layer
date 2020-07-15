@@ -13,40 +13,45 @@ class Service extends BaseService {
    * @param {String} organizationId
    * @return {Array}
    */
-   async publishCases(caseIds, organizationId) {
-     if (!caseIds) throw new Error('Case IDs are invalid');
-     if (!caseIds.length) throw new Error('Case IDs length is zero');
-     if (!organizationId) throw new Error('Organization ID is not valid');
+  async publishCases(caseIds, organizationId) {
+    if (!caseIds) throw new Error('Case IDs are invalid');
+    if (!caseIds.length) throw new Error('Case IDs length is zero');
+    if (!organizationId) throw new Error('Organization ID is not valid');
 
-     const stagedCases = await this.table
-       .whereIn('id', caseIds)
-       .andWhere('organization_id', organizationId)
-       .andWhere('state', 'staging')
-       .select();
+    const stagedCases = await this.table
+      .whereIn('id', caseIds)
+      .andWhere('organization_id', organizationId)
+      .andWhere('state', 'staging')
+      .select();
 
-     if (stagedCases.length === caseIds.length) {
-       const newlyPublishedCases = await this.table.whereIn('id', caseIds).update({ state: 'published' }).returning('*');
+    if (stagedCases.length === caseIds.length) {
+      const newlyPublishedCases = await this.table
+        .whereIn('id', caseIds)
+        .update({ state: 'published' })
+        .returning('*');
 
-       await this._hashAndSavePoints(caseIds);
+      await this._hashAndSavePoints(caseIds);
 
-       if (newlyPublishedCases) {
-         const results = await this.table
-           .where('state', 'published')
-           .andWhere('expires_at', '>', new Date())
-           .select();
+      if (newlyPublishedCases) {
+        const results = await this.table
+          .where('state', 'published')
+          .andWhere('expires_at', '>', new Date())
+          .select();
 
-         if (results) {
-           return _.map(results, c => this._mapCase(c));
-         } else {
-           throw new Error('Could not locate any unexpired published cases.')
-         }
-       } else {
-         throw new Error('Unable to publish cases at this time.')
-       }
-     } else {
-       throw new Error(`Could not locate staged cases with caseIds ${caseIds}. Make sure all are moved into staging state.`)
-     }
-   }
+        if (results) {
+          return _.map(results, c => this._mapCase(c));
+        } else {
+          throw new Error('Could not locate any unexpired published cases.');
+        }
+      } else {
+        throw new Error('Unable to publish cases at this time.');
+      }
+    } else {
+      throw new Error(
+        `Could not locate staged cases with caseIds ${caseIds}. Make sure all are moved into staging state.`,
+      );
+    }
+  }
 
   /**
    * Consent To Publish
@@ -238,7 +243,7 @@ class Service extends BaseService {
         'points.id AS pointId',
         'points.coordinates',
         'points.time',
-        'points.hash'
+        'points.hash',
       )
       .join('points', 'cases.id', '=', 'points.case_id')
       .join('publications', 'cases.publication_id', '=', 'publications.id')
@@ -272,20 +277,24 @@ class Service extends BaseService {
   // private
 
   async _hashAndSavePoints(caseIds) {
-    const newlyPublishedPoints = await pointsService.fetchRedactedPoints(caseIds);
+    const newlyPublishedPoints = await pointsService.fetchRedactedPoints(
+      caseIds,
+    );
 
     let currentPoint;
 
-    for(let i = 0; i < newlyPublishedPoints.length; i++) {
+    for (let i = 0; i < newlyPublishedPoints.length; i++) {
       currentPoint = newlyPublishedPoints[i];
 
-      if (currentPoint.hash) { continue; } // don't hash points if they are already
+      if (currentPoint.hash) {
+        continue;
+      } // don't hash points if they are already
 
       let hash = await geoHash.encrypt(currentPoint);
       let pointParams = {
         ..._.omit(currentPoint, ['id', 'pointId', 'hash']),
-        hash: hash.encodedString
-      }
+        hash: hash.encodedString,
+      };
 
       await pointsService.updateRedactedPoint(currentPoint.id, pointParams);
     }

@@ -36,7 +36,7 @@ class Service extends BaseService {
     if (points) {
       return this._getRedactedPoints(points).shift();
     }
-    throw new Error('Could not create point.')
+    throw new Error('Could not create point.');
   }
 
   async createPointsFromUpload(caseId, uploadedPoints) {
@@ -76,14 +76,14 @@ class Service extends BaseService {
       coordinates: this.makeCoordinate(point.longitude, point.latitude),
       time: new Date(point.time),
       ...(point.hash && { hash: point.hash }),
-      ...(point.nickname && { nickname: point.nickname })
+      ...(point.nickname && { nickname: point.nickname }),
     };
 
     const points = await this.updateOne(point_id, record);
     if (points) {
       return this._getRedactedPoints([points]).shift();
     }
-    throw new Error('Could not update point.')
+    throw new Error('Could not update point.');
   }
 
   /**
@@ -143,7 +143,7 @@ class Service extends BaseService {
       trail.latitude = c.y;
       trail.nickname = point.nickname || null;
       trail.time = point.time.getTime();
-      trail.hash = point.hash
+      trail.hash = point.hash;
 
       redactedTrail.push(trail);
     });
@@ -187,8 +187,8 @@ class Service extends BaseService {
         coordinates: this.makeCoordinate(trail.longitude, trail.latitude),
         time: new Date(trail.time * 1000), // Assumes time in epoch seconds
         case_id: caseId,
-      }
-    })
+      };
+    });
 
     return this.create(trailRecords);
   }
