@@ -4,6 +4,13 @@ exports.seed = function (knex) {
     .then(async function () {
       // Inserts seed entries one by one in series
       await knex('users').insert({
+        id: 'c317216f-70b0-4538-a03e-88388beca810',
+        idm_id: 'auth0|5f1f04a6084eb900374cca63',
+        organization_id: 1,
+        username: 'superuser@extremesolution.com',
+      });
+
+      await knex('users').insert({
         id: '14718564-f521-4079-8e1b-23694290fc09',
         idm_id: 'auth0|5ef53cdcf3ce32001a40ede7',
         organization_id: 1,
