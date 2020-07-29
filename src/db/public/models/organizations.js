@@ -1,4 +1,4 @@
-const BaseService = require('../common/service.js');
+const BaseService = require('../../common/service.js');
 
 class Service extends BaseService {
   find(query) {
@@ -19,4 +19,4 @@ class Service extends BaseService {
   }
 }
 
-module.exports = new Service('organizations');
+module.exports = new Service('organizations', 'public');
