@@ -1,5 +1,5 @@
-const BaseService = require('../common/service.js');
-const knex = require('../knex.js');
+const BaseService = require('../../common/service.js');
+const knex = require('../../knex.js').public;
 
 class Service extends BaseService {
   async find(query) {
@@ -37,4 +37,4 @@ class Service extends BaseService {
   }
 }
 
-module.exports = new Service('access_codes');
+module.exports = new Service('access_codes', 'public');

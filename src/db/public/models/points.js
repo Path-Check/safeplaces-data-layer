@@ -1,7 +1,6 @@
-const BaseService = require('../common/service.js');
-const knex = require('../knex.js');
+const BaseService = require('../../common/service.js');
+const knex = require('../../knex.js').public;
 const knexPostgis = require('knex-postgis');
-
 const st = knexPostgis(knex);
 
 class Service extends BaseService {
@@ -31,4 +30,4 @@ class Service extends BaseService {
   }
 }
 
-module.exports = new Service('points');
+module.exports = new Service('points', 'public');
