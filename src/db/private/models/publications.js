@@ -30,8 +30,6 @@ class Service extends BaseService {
   }
 
   async insert(publication) {
-    publication.publish_date = new Date(publication.publish_date * 1000);
-
     const results = await this.create(publication);
     if (results) {
       return results[0];
