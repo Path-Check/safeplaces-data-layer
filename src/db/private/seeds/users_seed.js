@@ -11,7 +11,7 @@ module.exports = function (knex) {
 
       await knex('users').insert({
         id: '14718564-f521-4079-8e1b-23694290fc09',
-        idm_id: 'auth0|5f1f0f0fe6a2910037277d2d',
+        idm_id: 'auth0|5f246391675616003785f947',
         organization_id: 1,
         username: 'safeplaces@extremesolution.com',
       });
