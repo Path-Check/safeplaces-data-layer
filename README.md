@@ -21,7 +21,6 @@ DB_PASS_PUB=password
 DB_USER_PUB=safepaths
 DB_NAME_PUB=safepaths_public
 
-SEED_MAPS_API_KEY=maps_api_key
 ```
 
 ## Installation and Usage
@@ -29,17 +28,17 @@ SEED_MAPS_API_KEY=maps_api_key
 Install by enter one of the commands below.
 
 ```
-npm install @sublet/data-layer
+npm install @pathcheck/data-layer
 
 -or-
 
-yarn add @sublet/data-layer
+yarn add @pathcheck/data-layer
 ```
 
 Once installed, include it
 
 ```
-const db = require('@sublet/data-layer');
+const db = require('@pathcheck/data-layer');
 
 // Pull the Organization Service from the Private database
 const { organizationService } = db.private
@@ -95,7 +94,7 @@ Due to the nature of database management we have built in a small CLI that will 
 
 This needs to be installed globaly so run the following command.
 
-`npm i -g @sublet/data-layer`
+`npm i -g @pathcheck/data-layer`
 
 ### Migrations
 
