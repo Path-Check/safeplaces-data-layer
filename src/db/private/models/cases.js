@@ -221,10 +221,15 @@ class Service extends BaseService {
   async deleteCasesPastRetention(organization_id) {
     if (!organization_id) throw new Error('Organization ID is invalid');
 
-    return this.table
+    const casesToDelete = await this.table
       .where({ organization_id: organization_id })
-      .where('expires_at', '<=', new Date())
-      .del();
+      .where('expires_at', '<=', new Date());
+
+    const caseIdsToDelete = _.map(casesToDelete, 'id');
+
+    await pointsService.table.whereIn('case_id', caseIdsToDelete).del();
+
+    return this.table.whereIn('id', caseIdsToDelete).del();
   }
 
   /**
